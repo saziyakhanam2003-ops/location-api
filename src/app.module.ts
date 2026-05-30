@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { StatesModule } from './states/states.module';
 import { CountriesModule } from './countries/countries.module';
 import { DistrictsModule } from './districts/districts.module';
+import { VillagesModule } from './villages/villages.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { DistrictsModule } from './districts/districts.module';
     StatesModule,
     CountriesModule,
     DistrictsModule,
+    VillagesModule,
   ],
 })
 export class AppModule {} 
