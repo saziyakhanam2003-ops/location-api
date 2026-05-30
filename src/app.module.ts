@@ -5,6 +5,7 @@ import { StatesModule } from './states/states.module';
 import { CountriesModule } from './countries/countries.module';
 import { DistrictsModule } from './districts/districts.module';
 import { VillagesModule } from './villages/villages.module';
+import { SubdistrictsModule } from './subdistricts/subdistricts.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { VillagesModule } from './villages/villages.module';
     CountriesModule,
     DistrictsModule,
     VillagesModule,
+    SubdistrictsModule,
   ],
 })
 export class AppModule {} 
