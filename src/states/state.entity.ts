@@ -27,7 +27,7 @@ export class State{
 
   @OneToMany(
     ()=> District,
-    district=> district.state,
+    (district)=> district.state,
   )
   districts!:District[];
 }
