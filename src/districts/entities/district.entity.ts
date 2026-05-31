@@ -1,4 +1,12 @@
-import { Entity,PrimaryGeneratedColumn,Column} from'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn
+} from 'typeorm';
+
+import { State } from '../../states/state.entity';
 @Entity('districts')
 export class District{
     @PrimaryGeneratedColumn()
@@ -7,4 +15,10 @@ export class District{
     name!:string;
     @Column()
     state_id!:number;
+    @ManyToOne(
+        ()=> State,
+        state => state.districts
+    )
+    @JoinColumn({name:'state_id'})
+    state!:State;
 }

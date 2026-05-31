@@ -1,4 +1,15 @@
-import {Entity,PrimaryGeneratedColumn,Column} from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
+
+import { District } from '../districts/entities/district.entity';
+import { Country } from '../countries/country.entity';
+
 @Entity('states')
 export class State{
   @PrimaryGeneratedColumn()
@@ -7,5 +18,16 @@ export class State{
   name!:string;
   @Column({nullable:true})
   code!:string;
-}
+  @ManyToOne(
+    ()=> Country,
+    (country)=>country.states,
+  )
+  @JoinColumn({name:'country_id'})
+  country!:Country;
 
+  @OneToMany(
+    ()=> District,
+    district=> district.state,
+  )
+  districts!:District[];
+}
