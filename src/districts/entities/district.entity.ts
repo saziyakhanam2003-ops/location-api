@@ -3,10 +3,13 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
+  OneToMany,
   JoinColumn
 } from 'typeorm';
 
 import { State } from '../../states/state.entity';
+import { Subdistrict } from '../../subdistricts/entities/subdistrict.entity';
+
 
 @Entity('districts')
 export class District{
@@ -20,4 +23,10 @@ export class District{
     )
     @JoinColumn({name:'state_id'})
     state!:State;
+
+    @OneToMany(
+    ()=>Subdistrict,
+    (Subdistrict)=>Subdistrict.district,
+    )
+    subdistricts!:Subdistrict[];
 }

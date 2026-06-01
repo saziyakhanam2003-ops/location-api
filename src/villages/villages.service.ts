@@ -1,31 +1,65 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
 import { Village } from './entities/village.entity';
+import { Subdistrict } from '../subdistricts/entities/subdistrict.entity';
 
 @Injectable()
 export class VillagesService {
   constructor(
     @InjectRepository(Village)
     private villageRepository: Repository<Village>,
+
+    @InjectRepository(Subdistrict)
+    private subdistrictRepository: Repository<Subdistrict>,
   ) {}
 
   findAll() {
-    return this.villageRepository.find();
+    return this.villageRepository.find({
+      relations: {
+        subdistrict: true,
+      },
+    });
   }
 
   findOne(id: number) {
     return this.villageRepository.findOne({
       where: { id },
+      relations: {
+        subdistrict: true,
+      },
     });
   }
 
-  create(data: Partial<Village>) {
-    return this.villageRepository.save(data);
+  async create(data: any) {
+    const subdistrict = await this.subdistrictRepository.findOne({
+      where: {
+        id: data.subdistrictId,
+      },
+    });
+
+    if (!subdistrict) {
+      throw new NotFoundException('Subdistrict not found');
+    }
+
+    const village = this.villageRepository.create({
+      name: data.name,
+      subdistrict: subdistrict,
+    });
+
+    return this.villageRepository.save(village);
   }
 
-  update(id: number, data: Partial<Village>) {
-    return this.villageRepository.update(id, data);
+  async update(id: number, data: any) {
+    await this.villageRepository.update(id, data);
+
+    return this.villageRepository.findOne({
+      where: { id },
+      relations: {
+        subdistrict: true,
+      },
+    });
   }
 
   remove(id: number) {

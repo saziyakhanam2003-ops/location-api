@@ -1,4 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+  JoinColumn
+} from 'typeorm';
+import { District } from '../../districts/entities/district.entity';
+import { Village } from '../../villages/entities/village.entity';
 
 @Entity('subdistricts')
 export class Subdistrict {
@@ -8,6 +17,18 @@ export class Subdistrict {
   @Column()
   name!: string;
 
-  @Column()
-  district_id!: number;
+  @ManyToOne(
+  ()=> District,
+  (district)=> district.subdistricts,
+  )
+
+  @JoinColumn({name:'district_id'})
+  district!:District;
+  @OneToMany(
+    ()=>Village,
+    (village)=>village.subdistrict,
+  )
+  villages!:Village[];
+  
+  
 }

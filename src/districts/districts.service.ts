@@ -21,9 +21,16 @@ export class DistrictsService {
     });
   }
 
-  create(data: Partial<District>) {
-    return this.districtRepository.save(data);
-  }
+  async create(data: any) {
+  const district = this.districtRepository.create({
+    name: data.name,
+    state: {
+      id: data.stateId,
+    },
+  });
+
+  return this.districtRepository.save(district);
+}
 
   update(id: number, data: Partial<District>) {
     return this.districtRepository.update(id, data);
