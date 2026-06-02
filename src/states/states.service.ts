@@ -13,20 +13,33 @@ export class StatesService {
     private stateRepository: Repository<State>,
   ) {}
 
-  findAll(): Promise<State[]> {
-    return this.stateRepository.find({
-      relations:{
-        country:true,
-        districts:true,
-      },
-    });
+  findAll(countryId?: number): Promise<State[]> {
+
+  console.log('SERVICE countryId=>',countryId);
+  if (countryId) {
+   return this.stateRepository
+  .createQueryBuilder('state')
+  .leftJoinAndSelect('state.country', 'country')
+  .leftJoinAndSelect('state.districts', 'district')
+  .where('country.id = :countryId', {
+    countryId: Number(countryId),
+  })
+  .getMany();
   }
+
+  return this.stateRepository.find({
+    relations: {
+      country: true,
+      districts: true,
+    },
+  });
+}
   async create(createStateDto: CreateStateDto) {
   const state = this.stateRepository.create({
     name: createStateDto.name,
     code: createStateDto.code,
     country: {
-      id: createStateDto.countryid,
+      id: createStateDto.countryId,
     } as any,
   });
 

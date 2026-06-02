@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get ,Post,Body} from '@nestjs/common';
 import { CountriesService } from './countries.service';
 
 @Controller('countries')
@@ -10,5 +10,10 @@ export class CountriesController {
   @Get()
   findAll() {
     return this.countriesService.findAll();
+  }
+
+  @Post()
+  create(@Body() body:any){
+    return this.countriesService.create(body);
   }
 }

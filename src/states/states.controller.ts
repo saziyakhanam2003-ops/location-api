@@ -1,4 +1,4 @@
-import { Controller, Get , Post,Patch,Delete,Param, Body ,} from '@nestjs/common';
+import { Controller, Get , Post,Patch,Delete,Param, Body ,Query} from '@nestjs/common';
 import { StatesService } from './states.service';
 import { CreateStateDto } from './dto/create-state.dto';
 
@@ -7,8 +7,9 @@ export class StatesController {
   constructor(private readonly statesService: StatesService) {}
 
   @Get()
-  findAll() {
-    return this.statesService.findAll();
+  findAll(@Query('countryId')countryId?:string) {
+    console.log('countryId => ',countryId);
+    return this.statesService.findAll(Number(countryId));
   }
   @Post()
   create(@Body() CreateStateDto:CreateStateDto){

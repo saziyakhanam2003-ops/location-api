@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete,Query } from '@nestjs/common';
 import { DistrictsService } from './districts.service';
 import { CreateDistrictDto } from './dto/create-district.dto';
 import { UpdateDistrictDto } from './dto/update-district.dto';
@@ -13,8 +13,8 @@ export class DistrictsController {
   }
 
   @Get()
-  findAll() {
-    return this.districtsService.findAll();
+  findAll(@Query('stateId')stateId?:string) {
+    return this.districtsService.findAll(stateId);
   }
 
   @Get(':id')

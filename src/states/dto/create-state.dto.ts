@@ -1,4 +1,5 @@
 import { IsNotEmpty,IsNumber, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateStateDto {
   @IsString()
@@ -8,6 +9,7 @@ export class CreateStateDto {
   @IsString()
   code!: string;
 
+  @Type(()=>Number)
   @IsNumber()
-  countryid!: number;
+  countryId!: number;
 }

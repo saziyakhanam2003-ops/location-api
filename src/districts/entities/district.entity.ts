@@ -26,7 +26,7 @@ export class District{
 
     @OneToMany(
     ()=>Subdistrict,
-    (Subdistrict)=>Subdistrict.district,
+    (subdistrict)=>subdistrict.district,
     )
     subdistricts!:Subdistrict[];
 }

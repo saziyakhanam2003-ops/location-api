@@ -12,7 +12,12 @@ export class SubdistrictsService {
   ) {}
 
   findAll() {
-    return this.subdistrictRepository.find();
+    return this.subdistrictRepository.find({
+      relations:{
+        district:true,
+        villages:true,
+      },
+    });
   }
 
   findOne(id: number) {
@@ -21,10 +26,16 @@ export class SubdistrictsService {
     });
   }
 
-  create(data: Partial<Subdistrict>) {
-    return this.subdistrictRepository.save(data);
-  }
+  async create(data:any){
+    const subdistrict = {
+      name:data.name,
+      district:{
+       id:data.districtId,
+      }as any,
+    };
 
+    return this.subdistrictRepository.save(subdistrict as any);
+  }
   update(id: number, data: Partial<Subdistrict>) {
     return this.subdistrictRepository.update(id, data);
   }

@@ -3,8 +3,8 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
+  JoinColumn,
   OneToMany,
-  JoinColumn
 } from 'typeorm';
 import { District } from '../../districts/entities/district.entity';
 import { Village } from '../../villages/entities/village.entity';
@@ -24,6 +24,7 @@ export class Subdistrict {
 
   @JoinColumn({name:'district_id'})
   district!:District;
+  
   @OneToMany(
     ()=>Village,
     (village)=>village.subdistrict,
