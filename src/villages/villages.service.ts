@@ -15,13 +15,27 @@ export class VillagesService {
     private subdistrictRepository: Repository<Subdistrict>,
   ) {}
 
-  findAll() {
+  findAll(subdistrictId?: number) {
+
+  if (subdistrictId) {
     return this.villageRepository.find({
+      where: {
+        subdistrict: {
+          id: Number(subdistrictId),
+        },
+      },
       relations: {
         subdistrict: true,
       },
     });
   }
+
+  return this.villageRepository.find({
+    relations: {
+      subdistrict: true,
+    },
+  });
+}
 
   findOne(id: number) {
     return this.villageRepository.findOne({

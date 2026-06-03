@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { VillagesService } from './villages.service';
 import { CreateVillageDto } from './dto/create-village.dto';
 import { UpdateVillageDto } from './dto/update-village.dto';
+import { Subdistrict } from '../subdistricts/entities/subdistrict.entity';
 
 @Controller('villages')
 export class VillagesController {
@@ -13,8 +14,10 @@ export class VillagesController {
   }
 
   @Get()
-  findAll() {
-    return this.villagesService.findAll();
+  findAll(@Query('subdistrictId') subdistrictId?: string ){
+    return this.villagesService.findAll(
+      subdistrictId?Number(subdistrictId):undefined,
+    );
   }
 
   @Get(':id')

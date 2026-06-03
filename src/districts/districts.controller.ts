@@ -14,7 +14,9 @@ export class DistrictsController {
 
   @Get()
   findAll(@Query('stateId')stateId?:string) {
-    return this.districtsService.findAll(stateId);
+    return this.districtsService.findAll(
+      stateId? Number(stateId):undefined
+    );
   }
 
   @Get(':id')

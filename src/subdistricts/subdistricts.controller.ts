@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { SubdistrictsService } from './subdistricts.service';
 import { CreateSubdistrictDto } from './dto/create-subdistrict.dto';
 import { UpdateSubdistrictDto } from './dto/update-subdistrict.dto';
@@ -13,8 +13,10 @@ export class SubdistrictsController {
   }
 
   @Get()
-  findAll() {
-    return this.subdistrictsService.findAll();
+  findAll(@Query('districtId') districtId?:string) {
+    return this.subdistrictsService.findAll(
+      districtId? Number(districtId):undefined,
+    );
   }
 
   @Get(':id')

@@ -2,21 +2,33 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { District } from './entities/district.entity';
+import { State } from '../states/state.entity';
+import { NotFoundException } from '@nestjs/common';
 @Injectable()
 export class DistrictsService {
   constructor(
-    @InjectRepository(District)
-    private districtRepository: Repository<District>,
-  ) {}
-  findAll(stateId?: string) {
+  @InjectRepository(District)
+  private districtRepository: Repository<District>,
+
+  @InjectRepository(State)
+  private stateRepository: Repository<State>,
+) {}
+  findAll(stateId?: number) {
+  if (stateId) {
+    return this.districtRepository.find({
+      where: {
+        state: {
+          id: Number(stateId),
+        },
+      },
+      relations: {
+        state: true,
+        subdistricts: true,
+      },
+    });
+  }
+
   return this.districtRepository.find({
-    where: stateId
-      ? {
-          state: {
-            id: +stateId,
-          },
-        }
-      : {},
     relations: {
       state: true,
       subdistricts: true,
@@ -29,12 +41,21 @@ export class DistrictsService {
     });
   }
 
-  async create(data: any) {
-  const district = this.districtRepository.create({
-    name: data.name,
-    state: {
-      id: data.stateId,
+  async create(data:any){
+
+  const state = await this.stateRepository.findOne({
+    where:{
+      id:data.stateId,
     },
+  });
+
+  if(!state){
+    throw new NotFoundException('State not found');
+  }
+
+  const district = this.districtRepository.create({
+    name:data.name,
+    state,
   });
 
   return this.districtRepository.save(district);
