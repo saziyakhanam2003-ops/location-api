@@ -7,10 +7,26 @@ export class StatesController {
   constructor(private readonly statesService: StatesService) {}
 
   @Get()
-  findAll(@Query('countryId')countryId?:string) {
-    console.log('countryId => ',countryId);
-    return this.statesService.findAll(Number(countryId));
-  }
+findAll(
+  @Query('countryId') countryId?: string,
+  @Query('page') page = '1',
+  @Query('limit') limit = '10',
+  @Query('search') search?: string,
+  @Query('sortBy') sortBy = 'id',
+  @Query('order') order: 'ASC' | 'DESC' = 'ASC',
+) {
+
+  console.log('SEARCH CONTROLLER=',search);
+  console.log('TYPE=',typeof search);
+  return this.statesService.findAll(
+    Number(countryId),
+    Number(page),
+    Number(limit),
+    search,
+    sortBy,
+    order,
+  );
+}
   @Post()
   create(@Body() CreateStateDto:CreateStateDto){
     return this.statesService.create(CreateStateDto);

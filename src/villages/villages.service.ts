@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like,Repository } from 'typeorm';
 
 import { Village } from './entities/village.entity';
 import { Subdistrict } from '../subdistricts/entities/subdistrict.entity';
@@ -15,27 +15,48 @@ export class VillagesService {
     private subdistrictRepository: Repository<Subdistrict>,
   ) {}
 
-  findAll(subdistrictId?: number) {
+  async findAll(
+  subdistrictId?: number,
+  page = 1,
+  limit = 10,
+  search?: string,
+  sortBy = 'id',
+  order: 'ASC' | 'DESC' = 'ASC',
+) {
+    const whereCondition: any = {};
 
-  if (subdistrictId) {
-    return this.villageRepository.find({
-      where: {
-        subdistrict: {
-          id: Number(subdistrictId),
+    // Filter by subdistrict
+    if (subdistrictId) {
+      whereCondition.subdistrict = {
+        id: Number(subdistrictId),
+      };
+    }
+
+    // Search by village name
+    if (search) {
+      whereCondition.name = Like('%'+ search +'%');
+     }
+
+    const [data, total] =
+      await this.villageRepository.findAndCount({
+        where: whereCondition,
+        relations: {
+          subdistrict: true,
         },
-      },
-      relations: {
-        subdistrict: true,
-      },
-    });
-  }
+        order:{
+          [sortBy]:order,
+        },
+        skip: (page - 1) * limit,
+        take: limit,
+      });
 
-  return this.villageRepository.find({
-    relations: {
-      subdistrict: true,
-    },
-  });
-}
+    return {
+      data,
+      total,
+      page,
+      limit,
+    };
+  }
 
   findOne(id: number) {
     return this.villageRepository.findOne({
@@ -59,7 +80,7 @@ export class VillagesService {
 
     const village = this.villageRepository.create({
       name: data.name,
-      subdistrict: subdistrict,
+      subdistrict,
     });
 
     return this.villageRepository.save(village);
