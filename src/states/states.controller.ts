@@ -1,7 +1,12 @@
 import { Controller, Get , Post,Patch,Delete,Param, Body ,Query} from '@nestjs/common';
 import { StatesService } from './states.service';
 import { CreateStateDto } from './dto/create-state.dto';
-
+import {
+  ApiTags,
+  ApiOperation,
+  ApiQuery,
+  ApiParam,
+} from '@nestjs/swagger';
 @Controller('states')
 export class StatesController {
   constructor(private readonly statesService: StatesService) {}
@@ -31,15 +36,34 @@ findAll(
   create(@Body() CreateStateDto:CreateStateDto){
     return this.statesService.create(CreateStateDto);
   }
+  @ApiParam({
+  name: 'id',
+  example: 1,
+  description: 'State ID',
+})
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+  return this.statesService.findOne(+id);
+}
 
-   @Patch(':id')
+
+  @ApiParam({
+    name:'id',
+    example:1,
+    description:'State ID',
+  })
+  @Patch(':id')
   update(
     @Param('id') id: string,
     @Body() body: CreateStateDto,
   ) {
     return this.statesService.update(+id, body);
   }
-
+  @ApiParam({
+    name:'id',
+    example:1,
+    description:'State ID',
+  })
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.statesService.remove(+id);

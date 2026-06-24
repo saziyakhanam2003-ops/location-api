@@ -4,7 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CreateDistrictDto {
 
   @ApiProperty({
-    example:'Udaipur',
+    example:'Jaipur',
     description:'District name',
   })
   @IsString()

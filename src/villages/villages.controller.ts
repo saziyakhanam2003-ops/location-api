@@ -3,7 +3,7 @@ import { VillagesService } from './villages.service';
 import { CreateVillageDto } from './dto/create-village.dto';
 import { UpdateVillageDto } from './dto/update-village.dto';
 import { Subdistrict } from '../subdistricts/entities/subdistrict.entity';
-import { ApiTags,ApiOperation,ApiQuery } from '@nestjs/swagger';
+import { ApiTags,ApiOperation,ApiQuery, ApiParam } from '@nestjs/swagger';
 @ApiTags('Villages')
 @Controller('villages')
 export class VillagesController {
@@ -75,17 +75,27 @@ export class VillagesController {
     order,
   );
 }
-
+  @ApiParam({
+    name:'id',
+    example:1,
+    description:'Village ID',
+  })
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.villagesService.findOne(+id);
   }
-
+  @ApiParam({
+    name:'id',
+    example:1,
+  })
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateVillageDto: UpdateVillageDto) {
     return this.villagesService.update(+id, updateVillageDto);
   }
-
+  @ApiParam({
+    name:'id',
+    example:1,
+  })
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.villagesService.remove(+id);

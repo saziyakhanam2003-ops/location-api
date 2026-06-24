@@ -67,6 +67,15 @@ console.log('TYPE=',typeof search);
     limit,
   };
 }
+  async findOne(id: number) {
+  return this.stateRepository.findOne({
+    where: { id },
+    relations: {
+      country: true,
+      districts: true,
+    },
+  });
+}
   async create(createStateDto: CreateStateDto) {
   const state = this.stateRepository.create({
     name: createStateDto.name,
