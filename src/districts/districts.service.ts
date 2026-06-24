@@ -13,34 +13,65 @@ export class DistrictsService {
   @InjectRepository(State)
   private stateRepository: Repository<State>,
 ) {}
-  findAll(stateId?: number) {
+  async findAll(
+  stateId?: number,
+  page = 1,
+  limit = 10,
+  search?: string,
+  sortBy = 'id',
+  order: 'ASC' | 'DESC' = 'ASC',
+) {
+  const query = this.districtRepository
+    .createQueryBuilder('district')
+    .leftJoinAndSelect('district.state', 'state')
+    .leftJoinAndSelect('district.subdistricts', 'subdistrict');
+
   if (stateId) {
-    return this.districtRepository.find({
-      where: {
-        state: {
-          id: Number(stateId),
-        },
-      },
-      relations: {
-        state: true,
-        subdistricts: true,
-      },
-    });
+    query.andWhere(
+      'state.id = :stateId',
+      { stateId },
+    );
   }
 
-  return this.districtRepository.find({
+  console.log('SEARCH=', search);
+  console.log('TYPE=', typeof search);
+  console.log('PARAM=', '%'+ search +'%');
+  console.log('STATEID=', stateId);
+  if (search) {
+    query.andWhere(
+      'district.name LIKE :search',
+      {
+        search: '%'+ search +'%',
+      },
+    );
+  }
+
+  query.orderBy('district.name',order);
+
+  query
+    .skip((page - 1) * limit)
+    .take(limit);
+
+  console.log(query.getSql());
+  console.log(query.getParameters());
+  const [data, total] = await query.getManyAndCount();
+
+  return {
+    data,
+    total,
+    page,
+    limit,
+  };
+}
+  async findOne(id: number) {
+  return await this.districtRepository.findOne({
+    where: { id },
     relations: {
       state: true,
       subdistricts: true,
     },
   });
 }
-  findOne(id: number) {
-    return this.districtRepository.findOne({
-      where: { id },
-    });
-  }
-
   async create(data:any){
 
   const state = await this.stateRepository.findOne({

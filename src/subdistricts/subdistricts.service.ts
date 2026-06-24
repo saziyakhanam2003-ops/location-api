@@ -12,28 +12,48 @@ export class SubdistrictsService {
     private subdistrictRepository: Repository<Subdistrict>,
   ) {}
 
-  findAll(districtId?: number) {
+  async findAll(
+  districtId?: number,
+  page = 1,
+  limit = 10,
+  search?: string,
+  sortBy = 'id',
+  order: 'ASC' | 'DESC' = 'ASC',
+) {
+  const query = this.subdistrictRepository
+    .createQueryBuilder('subdistrict')
+    .leftJoinAndSelect('subdistrict.district', 'district');
 
   if (districtId) {
-    return this.subdistrictRepository.find({
-      where: {
-        district: {
-          id: Number(districtId),
-        },
-      },
-      relations: {
-        district: true,
-        villages: true,
-      },
-    });
+    query.andWhere(
+      'district.id = :districtId',
+      { districtId },
+    );
   }
 
-  return this.subdistrictRepository.find({
-    relations: {
-      district: true,
-      villages: true,
-    },
-  });
+  if (search) {
+    query.andWhere(
+      'subdistrict.name LIKE :search',
+      {
+        search: '%'+ search +'%',
+      },
+    );
+  }
+
+  query.orderBy('subdistrict.name',order);
+
+  query
+    .skip((page - 1) * limit)
+    .take(limit);
+
+  const [data, total] = await query.getManyAndCount();
+
+  return {
+    data,
+    total,
+    page,
+    limit,
+  };
 }
 
   findOne(id: number) {

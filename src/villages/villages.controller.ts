@@ -60,14 +60,14 @@ export class VillagesController {
   @Get()
   findAll(
   @Query('subdistrictId') subdistrictId?: number,
-  @Query('page') page = 1,
-  @Query('limit') limit = 10,
+  @Query('page') page = '1',
+  @Query('limit') limit = '10',
   @Query('search') search?:string,
   @Query('sortBy') sortBy='id',
   @Query('order') order:'ASC'| 'DESC'='ASC',
 ) {
   return this.villagesService.findAll(
-    subdistrictId,
+    subdistrictId ?Number(subdistrictId):undefined,
     Number(page),
     Number(limit),
     search,

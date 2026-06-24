@@ -16,7 +16,7 @@ findAll(
   @Query('order') order: 'ASC' | 'DESC' = 'ASC',
 ) {
 
-  console.log('SEARCH CONTROLLER=',search);
+  console.log('CONTROLLER SEARCH=',search);
   console.log('TYPE=',typeof search);
   return this.statesService.findAll(
     Number(countryId),

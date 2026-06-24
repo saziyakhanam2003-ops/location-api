@@ -34,13 +34,17 @@ export class StatesService {
   }
 
 console.log('SERVICE SEARCH=', search);
-console.log('PARAM=', '%'+{search}+'%');
+console.log('TYPE=',typeof search);
 
   // Search by state name
   if (search) {
+    console.log({
+      search:'%'+String(search)+'%',
+    })
     query.andWhere('state.name LIKE :search', {
-      search: '%'+{search}+'%',
-    });
+      search: '%' + String(search) +'%',
+    },
+  );
   }
 
   // Sorting
@@ -48,6 +52,8 @@ console.log('PARAM=', '%'+{search}+'%');
 
   // Pagination
   query.skip((page - 1) * limit).take(limit);
+  console.log('PAGE=',page);
+  console.log('LIMIT=',limit);
   console.log('SEARCH=',search);
   console.log(query.getSql());
   console.log(query.getParameters());

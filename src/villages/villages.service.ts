@@ -23,40 +23,41 @@ export class VillagesService {
   sortBy = 'id',
   order: 'ASC' | 'DESC' = 'ASC',
 ) {
-    const whereCondition: any = {};
+  const query = this.villageRepository
+    .createQueryBuilder('village')
+    .leftJoinAndSelect('village.subdistrict', 'subdistrict');
 
-    // Filter by subdistrict
-    if (subdistrictId) {
-      whereCondition.subdistrict = {
-        id: Number(subdistrictId),
-      };
-    }
-
-    // Search by village name
-    if (search) {
-      whereCondition.name = Like('%'+ search +'%');
-     }
-
-    const [data, total] =
-      await this.villageRepository.findAndCount({
-        where: whereCondition,
-        relations: {
-          subdistrict: true,
-        },
-        order:{
-          [sortBy]:order,
-        },
-        skip: (page - 1) * limit,
-        take: limit,
-      });
-
-    return {
-      data,
-      total,
-      page,
-      limit,
-    };
+  if (subdistrictId) {
+    query.andWhere(
+      'subdistrict.id = :subdistrictId',
+      { subdistrictId },
+    );
   }
+
+  if (search) {
+    query.andWhere(
+      'village.name LIKE :search',
+      {
+        search: '%'+ search +'%',
+      },
+    );
+  }
+
+  query.orderBy('village.name', order);
+
+  query
+    .skip((page - 1) * limit)
+    .take(limit);
+
+  const [data, total] = await query.getManyAndCount();
+
+  return {
+    data,
+    total,
+    page,
+    limit,
+  };
+}
 
   findOne(id: number) {
     return this.villageRepository.findOne({

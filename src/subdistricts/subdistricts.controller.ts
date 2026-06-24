@@ -13,11 +13,23 @@ export class SubdistrictsController {
   }
 
   @Get()
-  findAll(@Query('districtId') districtId?:string) {
-    return this.subdistrictsService.findAll(
-      districtId? Number(districtId):undefined,
-    );
-  }
+findAll(
+  @Query('districtId') districtId?: string,
+  @Query('page') page = '1',
+  @Query('limit') limit = '10',
+  @Query('search') search?: string,
+  @Query('sortBy') sortBy = 'id',
+  @Query('order') order: 'ASC' | 'DESC' = 'ASC',
+) {
+  return this.subdistrictsService.findAll(
+    districtId ? Number(districtId) : undefined,
+    Number(page),
+    Number(limit),
+    search,
+    sortBy,
+    order,
+  );
+}
 
   @Get(':id')
   findOne(@Param('id') id: string) {
